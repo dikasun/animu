@@ -10,5 +10,6 @@
 
     <color name="color_primary">#3BC14A</color>
     <color name="color_favorite">#FF5959</color>
+    <color name="color_image_overlay">#141F2E80</color>
 
 </resources>

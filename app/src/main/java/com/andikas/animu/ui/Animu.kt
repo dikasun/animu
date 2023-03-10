@@ -17,6 +17,7 @@ import com.andikas.animu.ui.theme.AnimuTheme
 
 @Composable
 fun Animu(
+    navigateToFavorite: () -> Unit,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
@@ -27,9 +28,17 @@ fun Animu(
     ) {
         composable(Screen.Home.route) {
             HomeScreen(
-                navigateToDetail = { detailId, animeId, animeType ->
-                    navController.navigate(Screen.Detail.createRoute(detailId, animeId, animeType))
-                }
+                navigateToFavorite = navigateToFavorite,
+                navigateToDetail = { detailId, animeId, animeType, favorite ->
+                    navController.navigate(
+                        Screen.Detail.createRoute(
+                            detailId,
+                            animeId,
+                            animeType,
+                            favorite
+                        )
+                    )
+                },
             )
         }
         composable(
@@ -37,17 +46,20 @@ fun Animu(
             arguments = listOf(
                 navArgument("detailId") { type = NavType.StringType },
                 navArgument("animeId") { type = NavType.LongType },
-                navArgument("type") { type = NavType.StringType }
+                navArgument("type") { type = NavType.StringType },
+                navArgument("favorite") { type = NavType.BoolType }
             )
         ) {
             val detailId = it.arguments?.getString("detailId") ?: ""
             val animeId = it.arguments?.getLong("animeId") ?: -1L
             val animeType = it.arguments?.getString("type") ?: ""
+            val favorite = it.arguments?.getBoolean("favorite") ?: false
 
             DetailScreen(
                 id = animeId,
                 animeId = detailId,
                 animeType = animeType,
+                favorite = favorite,
                 navigateBack = {
                     navController.navigateUp()
                 }
@@ -63,6 +75,6 @@ fun Animu(
 @Composable
 fun AnimuPreview() {
     AnimuTheme {
-        Animu()
+        Animu(navigateToFavorite = {})
     }
 }

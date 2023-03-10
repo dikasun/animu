@@ -15,6 +15,15 @@ class LocalDataSource(private val animeDao: AnimeDao) {
     fun getTopAiringAnime(): Flow<List<TopAirAnimeWithGenres>> =
         animeDao.getTopAiringAnime()
 
+    fun getFavoriteRecentReleaseAnime(): Flow<List<RecentReleaseAnimeWithGenres>> =
+        animeDao.getFavoriteRecentReleaseAnime()
+
+    fun getFavoritePopularAnime(): Flow<List<PopularAnimeWithGenres>> =
+        animeDao.getFavoritePopularAnime()
+
+    fun getFavoriteTopAiringAnime(): Flow<List<TopAirAnimeWithGenres>> =
+        animeDao.getFavoriteTopAiringAnime()
+
     fun getDetailRecentReleaseAnime(id: Long): Flow<RecentReleaseAnimeWithGenres> =
         animeDao.getDetailRecentReleaseAnime(id)
 

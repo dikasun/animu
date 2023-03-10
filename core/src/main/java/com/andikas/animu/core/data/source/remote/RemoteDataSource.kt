@@ -1,7 +1,5 @@
 package com.andikas.animu.core.data.source.remote
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.andikas.animu.core.data.source.remote.network.ApiResponse
 import com.andikas.animu.core.data.source.remote.network.ApiService
 import com.andikas.animu.core.data.source.remote.response.AnimeDetailResponse
@@ -10,9 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class RemoteDataSource(private val apiService: ApiService) {
 

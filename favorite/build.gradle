@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.dynamic-feature'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
@@ -7,20 +7,12 @@ plugins {
 apply from: '../shared_dependencies.gradle'
 
 android {
-    namespace 'com.andikas.animu'
+    namespace 'com.andikas.animu.favorite'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.andikas.animu"
         minSdk 24
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary true
-        }
     }
 
     buildTypes {
@@ -47,12 +39,11 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-    dynamicFeatures = [':favorite']
 }
 
 dependencies {
+    implementation project(":app")
     implementation project(":core")
-    implementation fileTree(dir: "libs", include: ["*.jar"])
 
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -72,8 +63,8 @@ dependencies {
 
     // accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.23.1"
-}
 
-kapt {
-    correctErrorTypes true
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

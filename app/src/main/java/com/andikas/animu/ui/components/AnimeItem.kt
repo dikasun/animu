@@ -3,15 +3,11 @@ package com.andikas.animu.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -19,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
-import com.andikas.animu.ui.common.AnimeType
 import com.andikas.animu.ui.theme.AnimuTheme
 import com.andikas.animu.ui.theme.Poppins
 
@@ -29,10 +24,12 @@ fun AnimeItem(
     animeId: String,
     type: String,
     image: String,
+    isFavorite: Boolean,
     navigateToDetail: (
         animeId: String,
         id: Long,
         type: String,
+        favorite: Boolean,
     ) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -47,7 +44,7 @@ fun AnimeItem(
             .clip(RoundedCornerShape(12.dp))
             .height(210.dp)
             .width(150.dp)
-            .clickable { navigateToDetail(animeId, id, type) },
+            .clickable { navigateToDetail(animeId, id, type, isFavorite) },
     )
 }
 
@@ -57,15 +54,56 @@ fun AnimeBannerItem(
     animeId: String,
     type: String,
     image: String,
+    isFavorite: Boolean,
     navigateToDetail: (
         animeId: String,
         id: Long,
         type: String,
+        favorite: Boolean,
     ) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    SubcomposeAsyncImage(
+        model = image,
+        loading = {
+            LoadingSection()
+        },
+        contentScale = ContentScale.Crop,
+        contentDescription = null,
         modifier = modifier
+            .height(420.dp)
+            .width(640.dp)
+            .clickable { navigateToDetail(animeId, id, type, isFavorite) },
+    )
+}
+
+@Composable
+fun AnimeDetailItem(
+    id: Long,
+    animeId: String,
+    animeType: String,
+    image: String,
+    title: String,
+    releaseDate: String,
+    type: String,
+    genre: String,
+    isFavorite: Boolean,
+    navigateToDetail: (
+        animeId: String,
+        id: Long,
+        type: String,
+        favorite: Boolean,
+    ) -> Unit,
+    onFavoriteClick: (favorite: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var setFavorite by remember { mutableStateOf(isFavorite) }
+
+    Row(
+        modifier = modifier
+            .height(210.dp)
+            .fillMaxWidth()
+            .clickable { navigateToDetail(animeId, id, animeType, setFavorite) }
     ) {
         SubcomposeAsyncImage(
             model = image,
@@ -74,101 +112,57 @@ fun AnimeBannerItem(
             },
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            colorFilter = ColorFilter.tint(
-                color = Color.LightGray,
-                blendMode = BlendMode.Multiply
-            ),
             modifier = Modifier
-                .height(420.dp)
-                .width(640.dp)
-                .clickable { navigateToDetail(animeId, id, type) },
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(12.dp))
+                .width(150.dp),
         )
-        FavoriteButton(
-            isFavorite = false,
-            onClick = { },
+        Column(
             modifier = Modifier
-                .padding(20.dp)
-                .align(Alignment.BottomStart),
-        )
-    }
-}
-
-@Composable
-fun AnimeDetailItem(
-    id: Long,
-    animeId: String,
-    image: String,
-    title: String,
-    releaseDate: String,
-    type: String,
-    genre: String,
-    navigateToDetail: (
-        animeId: String,
-        id: Long,
-    ) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .height(210.dp)
-            .fillMaxWidth()
-            .clickable { navigateToDetail(animeId, id) }
-    ) {
-        Row {
-            SubcomposeAsyncImage(
-                model = image,
-                loading = {
-                    LoadingSection()
-                },
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(150.dp),
-            )
+                .padding(12.dp),
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(12.dp),
+                    .weight(1f),
             ) {
-                Column(
+                Text(
+                    text = title,
+                    fontSize = 24.sp,
+                    fontFamily = Poppins,
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = "$releaseDate | $type",
+                    fontSize = 18.sp,
+                    fontFamily = Poppins,
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier
-                        .weight(1f),
-                ) {
-                    Text(
-                        text = title,
-                        fontSize = 24.sp,
-                        fontFamily = Poppins,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Text(
-                        text = "$releaseDate | $type",
-                        fontSize = 18.sp,
-                        fontFamily = Poppins,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier
-                            .padding(top = 8.dp),
-                    )
-                    Text(
-                        text = genre,
-                        fontSize = 18.sp,
-                        fontFamily = Poppins,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .padding(top = 8.dp),
-                    )
-                }
-                FavoriteButton(
-                    isFavorite = false,
-                    onClick = { },
+                        .padding(top = 8.dp),
+                )
+                Text(
+                    text = genre,
+                    fontSize = 18.sp,
+                    fontFamily = Poppins,
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 8.dp),
                 )
             }
+            FavoriteButton(
+                isFavorite = setFavorite,
+                onClick = {
+                    setFavorite = !setFavorite
+                    onFavoriteClick(setFavorite)
+                },
+            )
         }
     }
 }
@@ -180,12 +174,15 @@ fun AnimeItemPreview() {
         AnimeDetailItem(
             id = 1,
             animeId = "",
+            animeType = "",
             image = "",
             title = "Title",
             releaseDate = "2002",
             type = "TV",
             genre = "Gore",
-            navigateToDetail = { _, _ -> },
+            isFavorite = false,
+            navigateToDetail = { _, _, _, _ -> },
+            onFavoriteClick = {},
         )
     }
 }

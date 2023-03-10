@@ -1,19 +1,22 @@
 package com.andikas.animu.ui.screen.home
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,10 +35,12 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun HomeScreen(
+    navigateToFavorite: () -> Unit,
     navigateToDetail: (
         animeId: String,
         id: Long,
         type: String,
+        favorite: Boolean,
     ) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = getViewModel(),
@@ -50,7 +55,8 @@ fun HomeScreen(
                     recentReleaseAnime = viewModel.recentReleaseAnimeState.value,
                     popularAnime = viewModel.popularAnimeState.value,
                     topAirAnime = viewModel.topAirAnimeState.value,
-                    navigateToDetail = navigateToDetail
+                    navigateToFavorite = navigateToFavorite,
+                    navigateToDetail = navigateToDetail,
                 )
             }
             else ->
@@ -67,7 +73,8 @@ fun HomeScreen(
                     recentReleaseAnime = viewModel.recentReleaseAnimeState.value,
                     popularAnime = viewModel.popularAnimeState.value,
                     topAirAnime = viewModel.topAirAnimeState.value,
-                    navigateToDetail = navigateToDetail
+                    navigateToFavorite = navigateToFavorite,
+                    navigateToDetail = navigateToDetail,
                 )
             }
             else ->
@@ -84,7 +91,8 @@ fun HomeScreen(
                     recentReleaseAnime = viewModel.recentReleaseAnimeState.value,
                     popularAnime = viewModel.popularAnimeState.value,
                     topAirAnime = viewModel.topAirAnimeState.value,
-                    navigateToDetail = navigateToDetail
+                    navigateToFavorite = navigateToFavorite,
+                    navigateToDetail = navigateToDetail,
                 )
             }
             else ->
@@ -98,10 +106,12 @@ fun HomeContent(
     recentReleaseAnime: List<Anime>,
     popularAnime: List<Anime>,
     topAirAnime: List<Anime>,
+    navigateToFavorite: () -> Unit,
     navigateToDetail: (
         animeId: String,
         id: Long,
         type: String,
+        favorite: Boolean,
     ) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -122,17 +132,23 @@ fun HomeContent(
                 painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = null,
                 modifier = Modifier
+                    .padding(top = 30.dp)
                     .size(28.dp),
             )
-            IconButton(
-                onClick = { },
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.color_primary),
+                    contentColor = Color.White
+                ),
+                onClick = navigateToFavorite,
                 modifier = Modifier
-                    .size(82.dp),
+                    .padding(top = 30.dp)
+                    .clip(CircleShape),
             ) {
                 Icon(
                     imageVector = Icons.Filled.Favorite,
-                    tint = colorResource(id = R.color.color_primary),
-                    contentDescription = "See Favorite"
+                    tint = Color.White,
+                    contentDescription = "See Favorite",
                 )
             }
         }
@@ -147,12 +163,17 @@ fun HomeContent(
                     animeId = it.animeId,
                     type = AnimeType.TOP_AIR.name,
                     image = it.animeImg,
+                    isFavorite = it.isFavorite,
                     navigateToDetail = navigateToDetail
                 )
             }
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Text(
+            text = "Popular Anime",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .padding(
                     start = 20.dp,
@@ -161,23 +182,7 @@ fun HomeContent(
                     bottom = 20.dp,
                 )
                 .fillMaxWidth(),
-        ) {
-            Text(
-                text = "Popular Anime",
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Medium,
-            )
-            Text(
-                text = "See All",
-                fontSize = 16.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = colorResource(id = R.color.color_primary),
-                modifier = Modifier
-                    .clickable { },
-            )
-        }
+        )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
@@ -192,35 +197,24 @@ fun HomeContent(
                     animeId = it.animeId,
                     type = AnimeType.POPULAR.name,
                     image = it.animeImg,
+                    isFavorite = it.isFavorite,
                     navigateToDetail = navigateToDetail
                 )
             }
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Text(
+            text = "Recent Release Anime",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .padding(
                     horizontal = 20.dp,
                     vertical = 20.dp,
                 )
                 .fillMaxWidth(),
-        ) {
-            Text(
-                text = "Recent Release Anime",
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Medium,
-            )
-            Text(
-                text = "See All",
-                fontSize = 16.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = colorResource(id = R.color.color_primary),
-                modifier = Modifier
-                    .clickable { },
-            )
-        }
+        )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
@@ -237,6 +231,7 @@ fun HomeContent(
                     animeId = it.animeId,
                     type = AnimeType.RECENT_RELEASE.name,
                     image = it.animeImg,
+                    isFavorite = it.isFavorite,
                     navigateToDetail = navigateToDetail
                 )
             }

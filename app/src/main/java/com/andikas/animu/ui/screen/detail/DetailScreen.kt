@@ -1,19 +1,16 @@
 package com.andikas.animu.ui.screen.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,15 +33,16 @@ fun DetailScreen(
     id: Long,
     animeId: String,
     animeType: String,
+    favorite: Boolean,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel = getViewModel(),
 ) {
     LaunchedEffect(true) {
         when (AnimeType.valueOf(animeType)) {
-            AnimeType.RECENT_RELEASE -> viewModel.recentReleaseAnimeDetail(id, animeId)
-            AnimeType.POPULAR -> viewModel.popularAnimeDetail(id, animeId)
-            AnimeType.TOP_AIR -> viewModel.topAirAnimeDetail(id, animeId)
+            AnimeType.RECENT_RELEASE -> viewModel.recentReleaseAnimeDetail(id, animeId, favorite)
+            AnimeType.POPULAR -> viewModel.popularAnimeDetail(id, animeId, favorite)
+            AnimeType.TOP_AIR -> viewModel.topAirAnimeDetail(id, animeId, favorite)
         }
     }
 
@@ -55,6 +53,22 @@ fun DetailScreen(
                 DetailContent(
                     anime = it,
                     navigateBack = navigateBack,
+                    onFavoriteClick = { anime, isFavorite ->
+                        when (AnimeType.valueOf(animeType)) {
+                            AnimeType.RECENT_RELEASE -> viewModel.setFavoriteRecentReleaseAnime(
+                                anime,
+                                isFavorite
+                            )
+                            AnimeType.POPULAR -> viewModel.setFavoritePopularAnime(
+                                anime,
+                                isFavorite
+                            )
+                            AnimeType.TOP_AIR -> viewModel.setFavoriteTopAiringAnime(
+                                anime,
+                                isFavorite
+                            )
+                        }
+                    },
                     modifier = modifier,
                 )
             }
@@ -68,8 +82,14 @@ fun DetailScreen(
 fun DetailContent(
     anime: Anime,
     navigateBack: () -> Unit,
+    onFavoriteClick: (
+        anime: Anime,
+        isFavorite: Boolean,
+    ) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var setFavorite by remember { mutableStateOf(anime.isFavorite) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -86,18 +106,25 @@ fun DetailContent(
                 },
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(
-                    color = Color.LightGray,
-                    blendMode = BlendMode.Multiply
-                ),
                 modifier = Modifier
                     .height(420.dp)
                     .fillMaxWidth(),
             )
+            Box(
+                modifier = Modifier
+                    .height(420.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.Black.copy(alpha = 0.35f),
+                    ),
+            )
             BackButton(
                 navigateBack = navigateBack,
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(
+                        vertical = 50.dp,
+                        horizontal = 20.dp
+                    )
                     .align(Alignment.TopStart),
             )
 
@@ -122,8 +149,11 @@ fun DetailContent(
                         .weight(3f),
                 )
                 ShortFavoriteButton(
-                    isFavorite = false,
-                    onClick = { },
+                    isFavorite = setFavorite,
+                    onClick = {
+                        setFavorite = !setFavorite
+                        onFavoriteClick(anime, setFavorite)
+                    },
                     modifier = Modifier
                         .weight(1f),
                 )

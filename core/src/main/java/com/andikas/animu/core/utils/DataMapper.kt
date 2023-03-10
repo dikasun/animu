@@ -14,6 +14,7 @@ object DataMapper {
                 animeId = it.animeId,
                 animeImg = it.animeImg,
                 animeTitle = it.animeTitle,
+                isFavorite = false,
             )
             val genre = listOf<RecentReleaseAnimeGenreEntity>()
             animeList.add(RecentReleaseAnimeWithGenres(anime, genre))
@@ -29,6 +30,7 @@ object DataMapper {
                 animeId = it.animeId,
                 animeImg = it.animeImg,
                 animeTitle = it.animeTitle,
+                isFavorite = false,
             )
             val genre = listOf<PopularAnimeGenreEntity>()
             animeList.add(PopularAnimeWithGenres(anime, genre))
@@ -44,6 +46,7 @@ object DataMapper {
                 animeId = it.animeId,
                 animeImg = it.animeImg,
                 animeTitle = it.animeTitle,
+                isFavorite = false,
             )
             val genre = listOf<TopAirAnimeGenreEntity>()
             animeList.add(TopAirAnimeWithGenres(anime, genre))
@@ -52,9 +55,10 @@ object DataMapper {
         return animeList
     }
 
-    fun mapDetailRecentReleaseAnimeResponseToEntities(
+    fun mapDetailRecentReleaseAnimeResponseToEntity(
         id: Long,
         anime: String,
+        isFavorite: Boolean,
         input: AnimeDetailResponse
     ): RecentReleaseAnimeWithGenres =
         RecentReleaseAnimeWithGenres(
@@ -68,15 +72,17 @@ object DataMapper {
                 status = input.status,
                 synopsis = input.synopsis,
                 type = input.type,
+                isFavorite = isFavorite,
             ),
             genres = input.genres.map { genre ->
                 RecentReleaseAnimeGenreEntity(animeId = id, genre = genre)
             }
         )
 
-    fun mapDetailPopularAnimeResponseToEntities(
+    fun mapDetailPopularAnimeResponseToEntity(
         id: Long,
         anime: String,
+        isFavorite: Boolean,
         input: AnimeDetailResponse,
     ): PopularAnimeWithGenres =
         PopularAnimeWithGenres(
@@ -90,15 +96,17 @@ object DataMapper {
                 status = input.status,
                 synopsis = input.synopsis,
                 type = input.type,
+                isFavorite = isFavorite,
             ),
             genres = input.genres.map { genre ->
                 PopularAnimeGenreEntity(animeId = id, genre = genre)
             }
         )
 
-    fun mapDetailTopAirAnimeResponseToEntities(
+    fun mapDetailTopAirAnimeResponseToEntity(
         id: Long,
         anime: String,
+        isFavorite: Boolean,
         input: AnimeDetailResponse,
     ): TopAirAnimeWithGenres =
         TopAirAnimeWithGenres(
@@ -112,6 +120,7 @@ object DataMapper {
                 status = input.status,
                 synopsis = input.synopsis,
                 type = input.type,
+                isFavorite = isFavorite,
             ),
             genres = input.genres.map { genre ->
                 TopAirAnimeGenreEntity(animeId = id, genre = genre)
@@ -132,6 +141,7 @@ object DataMapper {
                 synopsis = it.anime.synopsis ?: "",
                 releasedDate = it.anime.releasedDate ?: "",
                 type = it.anime.type ?: "",
+                isFavorite = it.anime.isFavorite,
             )
         }
 
@@ -149,6 +159,7 @@ object DataMapper {
                 synopsis = it.anime.synopsis ?: "",
                 releasedDate = it.anime.releasedDate ?: "",
                 type = it.anime.type ?: "",
+                isFavorite = it.anime.isFavorite,
             )
         }
 
@@ -166,60 +177,62 @@ object DataMapper {
                 synopsis = it.anime.synopsis ?: "",
                 releasedDate = it.anime.releasedDate ?: "",
                 type = it.anime.type ?: "",
+                isFavorite = it.anime.isFavorite,
             )
         }
 
     fun mapDetailRecentReleaseAnimeEntitiesToDomain(input: RecentReleaseAnimeWithGenres): Anime =
-            Anime(
-                id = input.anime.id,
-                animeId = input.anime.animeId,
-                animeImg = input.anime.animeImg,
-                animeTitle = input.anime.animeTitle,
-                otherNames = input.anime.otherNames ?: "",
-                totalEpisodes = input.anime.totalEpisodes ?: "",
-                genres = input.genres.map { genre -> genre.genre },
-                status = input.anime.status ?: "",
-                synopsis = input.anime.synopsis ?: "",
-                releasedDate = input.anime.releasedDate ?: "",
-                type = input.anime.type ?: "",
-            )
+        Anime(
+            id = input.anime.id,
+            animeId = input.anime.animeId,
+            animeImg = input.anime.animeImg,
+            animeTitle = input.anime.animeTitle,
+            otherNames = input.anime.otherNames ?: "",
+            totalEpisodes = input.anime.totalEpisodes ?: "",
+            genres = input.genres.map { genre -> genre.genre },
+            status = input.anime.status ?: "",
+            synopsis = input.anime.synopsis ?: "",
+            releasedDate = input.anime.releasedDate ?: "",
+            type = input.anime.type ?: "",
+            isFavorite = input.anime.isFavorite,
+        )
 
     fun mapDetailPopularAnimeEntitiesToDomain(input: PopularAnimeWithGenres): Anime =
-            Anime(
-                id = input.anime.id,
-                animeId = input.anime.animeId,
-                animeImg = input.anime.animeImg,
-                animeTitle = input.anime.animeTitle,
-                otherNames = input.anime.otherNames ?: "",
-                totalEpisodes = input.anime.totalEpisodes ?: "",
-                genres = input.genres.map { genre -> genre.genre },
-                status = input.anime.status ?: "",
-                synopsis = input.anime.synopsis ?: "",
-                releasedDate = input.anime.releasedDate ?: "",
-                type = input.anime.type ?: "",
-            )
+        Anime(
+            id = input.anime.id,
+            animeId = input.anime.animeId,
+            animeImg = input.anime.animeImg,
+            animeTitle = input.anime.animeTitle,
+            otherNames = input.anime.otherNames ?: "",
+            totalEpisodes = input.anime.totalEpisodes ?: "",
+            genres = input.genres.map { genre -> genre.genre },
+            status = input.anime.status ?: "",
+            synopsis = input.anime.synopsis ?: "",
+            releasedDate = input.anime.releasedDate ?: "",
+            type = input.anime.type ?: "",
+            isFavorite = input.anime.isFavorite,
+        )
 
     fun mapDetailTopAirAnimeEntitiesToDomain(input: TopAirAnimeWithGenres): Anime =
-            Anime(
-                id = input.anime.id,
-                animeId = input.anime.animeId,
-                animeImg = input.anime.animeImg,
-                animeTitle = input.anime.animeTitle,
-                otherNames = input.anime.otherNames ?: "",
-                totalEpisodes = input.anime.totalEpisodes ?: "",
-                genres = input.genres.map { genre -> genre.genre },
-                status = input.anime.status ?: "",
-                synopsis = input.anime.synopsis ?: "",
-                releasedDate = input.anime.releasedDate ?: "",
-                type = input.anime.type ?: "",
-            )
+        Anime(
+            id = input.anime.id,
+            animeId = input.anime.animeId,
+            animeImg = input.anime.animeImg,
+            animeTitle = input.anime.animeTitle,
+            otherNames = input.anime.otherNames ?: "",
+            totalEpisodes = input.anime.totalEpisodes ?: "",
+            genres = input.genres.map { genre -> genre.genre },
+            status = input.anime.status ?: "",
+            synopsis = input.anime.synopsis ?: "",
+            releasedDate = input.anime.releasedDate ?: "",
+            type = input.anime.type ?: "",
+            isFavorite = input.anime.isFavorite,
+        )
 
-    fun mapRecentReleaseAnimeDomainToEntity(
-        id: Long,
-        input: Anime,
-    ): RecentReleaseAnimeWithGenres =
+    fun mapRecentReleaseAnimeDomainToEntity(input: Anime): RecentReleaseAnimeWithGenres =
         RecentReleaseAnimeWithGenres(
             anime = RecentReleaseAnimeEntity(
+                id = input.id,
                 animeId = input.animeId,
                 animeImg = input.animeImg,
                 animeTitle = input.animeTitle,
@@ -228,19 +241,18 @@ object DataMapper {
                 status = input.status,
                 synopsis = input.synopsis,
                 releasedDate = input.releasedDate,
-                type = input.type
+                type = input.type,
+                isFavorite = input.isFavorite,
             ),
             genres = input.genres.map { genre ->
-                RecentReleaseAnimeGenreEntity(animeId = id, genre = genre)
+                RecentReleaseAnimeGenreEntity(animeId = input.id, genre = genre)
             }
         )
 
-    fun mapPopularAnimeDomainToEntity(
-        id: Long,
-        input: Anime,
-    ): PopularAnimeWithGenres =
+    fun mapPopularAnimeDomainToEntity(input: Anime): PopularAnimeWithGenres =
         PopularAnimeWithGenres(
             anime = PopularAnimeEntity(
+                id = input.id,
                 animeId = input.animeId,
                 animeImg = input.animeImg,
                 animeTitle = input.animeTitle,
@@ -249,18 +261,17 @@ object DataMapper {
                 status = input.status,
                 synopsis = input.synopsis,
                 releasedDate = input.releasedDate,
-                type = input.type
+                type = input.type,
+                isFavorite = input.isFavorite,
             ),
             genres = input.genres.map { genre ->
-                PopularAnimeGenreEntity(animeId = id, genre = genre)
+                PopularAnimeGenreEntity(animeId = input.id, genre = genre)
             }
         )
 
-    fun mapTopAirAnimeDomainToEntity(
-        id: Long,
-        input: Anime,
-    ): TopAirAnimeWithGenres = TopAirAnimeWithGenres(
+    fun mapTopAirAnimeDomainToEntity(input: Anime): TopAirAnimeWithGenres = TopAirAnimeWithGenres(
         anime = TopAirAnimeEntity(
+            id = input.id,
             animeId = input.animeId,
             animeImg = input.animeImg,
             animeTitle = input.animeTitle,
@@ -269,10 +280,11 @@ object DataMapper {
             status = input.status,
             synopsis = input.synopsis,
             releasedDate = input.releasedDate,
-            type = input.type
+            type = input.type,
+            isFavorite = input.isFavorite,
         ),
         genres = input.genres.map { genre ->
-            TopAirAnimeGenreEntity(animeId = id, genre = genre)
+            TopAirAnimeGenreEntity(animeId = input.id, genre = genre)
         }
     )
 }

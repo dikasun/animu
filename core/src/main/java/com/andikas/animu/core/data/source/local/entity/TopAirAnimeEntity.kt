@@ -2,7 +2,15 @@ package com.andikas.animu.core.data.source.local.entity
 
 import androidx.room.*
 
-@Entity(tableName = "top_air_anime")
+@Entity(
+    tableName = "top_air_anime",
+    indices = [
+        Index(
+            value = ["animeId"],
+            unique = true,
+        )
+    ]
+)
 data class TopAirAnimeEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -34,6 +42,9 @@ data class TopAirAnimeEntity(
 
     @ColumnInfo(name = "type")
     var type: String? = null,
+
+    @ColumnInfo(name = "isFavorite")
+    var isFavorite: Boolean,
 )
 
 data class TopAirAnimeWithGenres(
