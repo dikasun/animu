@@ -59,14 +59,4 @@ class LocalDataSource(private val animeDao: AnimeDao) {
 
     suspend fun updateTopAiringAnime(anime: TopAirAnimeEntity) =
         animeDao.updateTopAiringAnime(anime)
-
-    suspend fun updateRecentReleaseAnimeGenre(genre: List<RecentReleaseAnimeGenreEntity>) =
-        animeDao.updateRecentReleaseAnimeGenre(genre)
-
-    suspend fun updatePopularAnimeGenre(genre: List<PopularAnimeGenreEntity>) =
-        animeDao.updatePopularAnimeGenre(genre)
-
-    suspend fun updateTopAiringAnimeGenre(genre: List<TopAirAnimeGenreEntity>) =
-        animeDao.updateTopAiringAnimeGenre(genre)
-
 }

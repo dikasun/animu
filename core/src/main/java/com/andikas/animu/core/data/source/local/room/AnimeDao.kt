@@ -69,13 +69,4 @@ interface AnimeDao {
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateTopAiringAnime(anime: TopAirAnimeEntity)
-
-    @Update(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun updateRecentReleaseAnimeGenre(genre: List<RecentReleaseAnimeGenreEntity>)
-
-    @Update(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun updatePopularAnimeGenre(genre: List<PopularAnimeGenreEntity>)
-
-    @Update(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun updateTopAiringAnimeGenre(genre: List<TopAirAnimeGenreEntity>)
 }

@@ -7,7 +7,6 @@ import com.andikas.animu.core.data.source.local.room.AnimeDatabase
 import com.andikas.animu.core.data.source.remote.RemoteDataSource
 import com.andikas.animu.core.data.source.remote.network.ApiService
 import com.andikas.animu.core.domain.repository.IAnimeRepository
-import com.andikas.animu.core.utils.AppExecutors
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -49,6 +48,5 @@ val networkModule = module {
 val repositoryModule = module {
     single { LocalDataSource(get()) }
     single { RemoteDataSource(get()) }
-    factory { AppExecutors() }
-    single<IAnimeRepository> { AnimeRepository(get(), get(), get()) }
+    single<IAnimeRepository> { AnimeRepository(get(), get()) }
 }

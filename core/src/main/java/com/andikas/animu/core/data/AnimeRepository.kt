@@ -7,7 +7,6 @@ import com.andikas.animu.core.data.source.remote.response.AnimeDetailResponse
 import com.andikas.animu.core.data.source.remote.response.ListAnimeResponse
 import com.andikas.animu.core.domain.model.Anime
 import com.andikas.animu.core.domain.repository.IAnimeRepository
-import com.andikas.animu.core.utils.AppExecutors
 import com.andikas.animu.core.utils.DataMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.map
 class AnimeRepository(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val appExecutors: AppExecutors,
 ) : IAnimeRepository {
 
     override fun getRecentReleaseAnime(): Flow<Resource<List<Anime>>> =
