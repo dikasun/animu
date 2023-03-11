@@ -20,6 +20,7 @@ import com.andikas.animu.core.domain.model.Anime
 import com.andikas.animu.ui.common.AnimeType
 import com.andikas.animu.ui.components.AnimeDetailItem
 import com.andikas.animu.ui.components.BackButton
+import com.andikas.animu.ui.components.EmptySection
 import com.andikas.animu.ui.theme.Poppins
 import org.koin.androidx.compose.getViewModel
 
@@ -123,6 +124,11 @@ fun FavoriteContent(
                     modifier = Modifier
                         .padding(start = 16.dp)
                 )
+            }
+        }
+        if (topAirAnime.isEmpty() && popularAnime.isEmpty() && recentReleaseAnime.isEmpty()) {
+            item {
+                EmptySection()
             }
         }
         if (topAirAnime.isNotEmpty()) {

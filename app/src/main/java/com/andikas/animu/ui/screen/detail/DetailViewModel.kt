@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class DetailViewModel(private val animeUseCase: AnimeUseCase) : ViewModel() {
 
     private var _uiState: Flow<Resource<Anime>> = flowOf(Resource.Loading())
-    val uiState: Flow<Resource<Anime>> get() = _uiState
+    val uiState get() = _uiState
 
     fun recentReleaseAnimeDetail(id: Long, detailId: String, favorite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
