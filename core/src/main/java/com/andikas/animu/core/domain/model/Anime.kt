@@ -12,4 +12,5 @@ data class Anime(
     var synopsis: String,
     var releasedDate: String,
     var type: String,
+    var isFavorite: Boolean,
 )

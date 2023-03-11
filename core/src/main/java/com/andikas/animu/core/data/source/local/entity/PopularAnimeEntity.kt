@@ -2,7 +2,15 @@ package com.andikas.animu.core.data.source.local.entity
 
 import androidx.room.*
 
-@Entity(tableName = "popular_anime")
+@Entity(
+    tableName = "popular_anime",
+    indices = [
+        Index(
+            value = ["animeId"],
+            unique = true,
+        )
+    ]
+)
 data class PopularAnimeEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -34,6 +42,9 @@ data class PopularAnimeEntity(
 
     @ColumnInfo(name = "type")
     var type: String? = null,
+
+    @ColumnInfo(name = "isFavorite")
+    var isFavorite: Boolean,
 )
 
 data class PopularAnimeWithGenres(

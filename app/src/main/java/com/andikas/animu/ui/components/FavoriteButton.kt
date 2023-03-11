@@ -37,7 +37,7 @@ fun FavoriteButton(
             modifier = Modifier,
         )
         Text(
-            text = "Add To Favorite",
+            text = "Favorite",
             fontFamily = Poppins,
             color = Color.White,
             modifier = Modifier

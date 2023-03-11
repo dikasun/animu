@@ -2,7 +2,15 @@ package com.andikas.animu.core.data.source.local.entity
 
 import androidx.room.*
 
-@Entity(tableName = "recent_anime")
+@Entity(
+    tableName = "recent_anime",
+    indices = [
+        Index(
+            value = ["animeId"],
+            unique = true,
+        )
+    ]
+)
 data class RecentReleaseAnimeEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -34,6 +42,9 @@ data class RecentReleaseAnimeEntity(
 
     @ColumnInfo(name = "type")
     var type: String? = null,
+
+    @ColumnInfo(name = "isFavorite")
+    var isFavorite: Boolean,
 )
 
 data class RecentReleaseAnimeWithGenres(

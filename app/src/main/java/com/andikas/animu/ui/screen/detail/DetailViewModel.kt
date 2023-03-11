@@ -13,23 +13,41 @@ import kotlinx.coroutines.launch
 class DetailViewModel(private val animeUseCase: AnimeUseCase) : ViewModel() {
 
     private var _uiState: Flow<Resource<Anime>> = flowOf(Resource.Loading())
-    val uiState: Flow<Resource<Anime>> get() = _uiState
+    val uiState get() = _uiState
 
-    fun recentReleaseAnimeDetail(id: Long, detailId: String) {
+    fun recentReleaseAnimeDetail(id: Long, detailId: String, favorite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState = animeUseCase.getDetailRecentReleaseAnime(id, detailId)
+            _uiState = animeUseCase.getDetailRecentReleaseAnime(id, detailId, favorite)
         }
     }
 
-    fun popularAnimeDetail(id: Long, detailId: String) {
+    fun popularAnimeDetail(id: Long, detailId: String, favorite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState = animeUseCase.getDetailPopularAnime(id, detailId)
+            _uiState = animeUseCase.getDetailPopularAnime(id, detailId, favorite)
         }
     }
 
-    fun topAirAnimeDetail(id: Long, detailId: String) {
+    fun topAirAnimeDetail(id: Long, detailId: String, favorite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState = animeUseCase.getDetailTopAiringAnime(id, detailId)
+            _uiState = animeUseCase.getDetailTopAiringAnime(id, detailId, favorite)
+        }
+    }
+
+    fun setFavoriteRecentReleaseAnime(anime: Anime, state: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            animeUseCase.setFavoriteRecentReleaseAnime(anime, state)
+        }
+    }
+
+    fun setFavoritePopularAnime(anime: Anime, state: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            animeUseCase.setFavoritePopularAnime(anime, state)
+        }
+    }
+
+    fun setFavoriteTopAiringAnime(anime: Anime, state: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            animeUseCase.setFavoriteTopAiringAnime(anime, state)
         }
     }
 }
