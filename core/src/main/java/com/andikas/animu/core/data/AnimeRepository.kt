@@ -7,7 +7,6 @@ import com.andikas.animu.core.data.source.remote.response.AnimeDetailResponse
 import com.andikas.animu.core.data.source.remote.response.ListAnimeResponse
 import com.andikas.animu.core.domain.model.Anime
 import com.andikas.animu.core.domain.repository.IAnimeRepository
-import com.andikas.animu.core.utils.AppExecutors
 import com.andikas.animu.core.utils.DataMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.map
 class AnimeRepository(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val appExecutors: AppExecutors,
 ) : IAnimeRepository {
 
     override fun getRecentReleaseAnime(): Flow<Resource<List<Anime>>> =
@@ -87,7 +85,47 @@ class AnimeRepository(
             }
         }.asFlow()
 
-    override fun getDetailRecentReleaseAnime(id: Long, anime: String): Flow<Resource<Anime>> =
+    override fun getFavoriteRecentReleaseAnime(): Flow<List<Anime>> {
+        return localDataSource.getFavoriteRecentReleaseAnime().map {
+            DataMapper.mapRecentReleaseAnimeEntitiesToDomain(it)
+        }
+    }
+
+    override suspend fun setFavoriteRecentReleaseAnime(anime: Anime, state: Boolean) {
+        val animeEntity = DataMapper.mapRecentReleaseAnimeDomainToEntity(anime)
+        animeEntity.anime.isFavorite = state
+        localDataSource.updateRecentReleaseAnime(animeEntity.anime)
+    }
+
+    override fun getFavoritePopularAnime(): Flow<List<Anime>> {
+        return localDataSource.getFavoritePopularAnime().map {
+            DataMapper.mapPopularAnimeEntitiesToDomain(it)
+        }
+    }
+
+    override suspend fun setFavoritePopularAnime(anime: Anime, state: Boolean) {
+        val animeEntity = DataMapper.mapPopularAnimeDomainToEntity(anime)
+        animeEntity.anime.isFavorite = state
+        localDataSource.updatePopularAnime(animeEntity.anime)
+    }
+
+    override fun getFavoriteTopAiringAnime(): Flow<List<Anime>> {
+        return localDataSource.getFavoriteTopAiringAnime().map {
+            DataMapper.mapTopAirAnimeEntitiesToDomain(it)
+        }
+    }
+
+    override suspend fun setFavoriteTopAiringAnime(anime: Anime, state: Boolean) {
+        val animeEntity = DataMapper.mapTopAirAnimeDomainToEntity(anime)
+        animeEntity.anime.isFavorite = state
+        localDataSource.updateTopAiringAnime(animeEntity.anime)
+    }
+
+    override fun getDetailRecentReleaseAnime(
+        id: Long,
+        anime: String,
+        isFavorite: Boolean
+    ): Flow<Resource<Anime>> =
         object : NetworkBoundResource<Anime, AnimeDetailResponse>() {
             override fun loadFromDB(): Flow<Anime> {
                 return localDataSource.getDetailRecentReleaseAnime(id).map {
@@ -100,8 +138,8 @@ class AnimeRepository(
             }
 
             override suspend fun saveCallResult(data: AnimeDetailResponse) {
-                val mAnime = DataMapper.mapDetailRecentReleaseAnimeResponseToEntities(
-                    id, anime, data
+                val mAnime = DataMapper.mapDetailRecentReleaseAnimeResponseToEntity(
+                    id, anime, isFavorite, data
                 )
                 localDataSource.updateRecentReleaseAnime(mAnime.anime)
                 localDataSource.insertRecentReleaseAnimeGenres(mAnime.genres)
@@ -112,7 +150,11 @@ class AnimeRepository(
             }
         }.asFlow()
 
-    override fun getDetailPopularAnime(id: Long, anime: String): Flow<Resource<Anime>> =
+    override fun getDetailPopularAnime(
+        id: Long,
+        anime: String,
+        isFavorite: Boolean
+    ): Flow<Resource<Anime>> =
         object : NetworkBoundResource<Anime, AnimeDetailResponse>() {
             override fun loadFromDB(): Flow<Anime> {
                 return localDataSource.getDetailPopularAnime(id).map {
@@ -125,8 +167,8 @@ class AnimeRepository(
             }
 
             override suspend fun saveCallResult(data: AnimeDetailResponse) {
-                val mAnime = DataMapper.mapDetailPopularAnimeResponseToEntities(
-                    id, anime, data
+                val mAnime = DataMapper.mapDetailPopularAnimeResponseToEntity(
+                    id, anime, isFavorite, data
                 )
                 localDataSource.updatePopularAnime(mAnime.anime)
                 localDataSource.insertPopularAnimeGenres(mAnime.genres)
@@ -137,7 +179,11 @@ class AnimeRepository(
             }
         }.asFlow()
 
-    override fun getDetailTopAiringAnime(id: Long, anime: String): Flow<Resource<Anime>> =
+    override fun getDetailTopAiringAnime(
+        id: Long,
+        anime: String,
+        isFavorite: Boolean
+    ): Flow<Resource<Anime>> =
         object : NetworkBoundResource<Anime, AnimeDetailResponse>() {
             override fun loadFromDB(): Flow<Anime> {
                 return localDataSource.getDetailTopAiringAnime(id).map {
@@ -150,8 +196,8 @@ class AnimeRepository(
             }
 
             override suspend fun saveCallResult(data: AnimeDetailResponse) {
-                val mAnime = DataMapper.mapDetailTopAirAnimeResponseToEntities(
-                    id, anime, data
+                val mAnime = DataMapper.mapDetailTopAirAnimeResponseToEntity(
+                    id, anime, isFavorite, data
                 )
                 localDataSource.updateTopAiringAnime(mAnime.anime)
                 localDataSource.insertTopAiringAnimeGenres(mAnime.genres)
